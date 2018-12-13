@@ -1,0 +1,142 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@RenderSection("Title") - BCR</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layer-v3.1.1/theme/default/layer.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layui/tb.css" />
+    <script src="~/lib/lib/timeselect/js/jquery-1.9.1.js"></script>
+    <script src="~/lib/lib/layui/layui.js"></script>
+    <script src="~/lib/jquery.cookie.js"></script>
+
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo" >BCR</div>
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a onclick="goto('/Home/Index')" href="#">待办事项</a></li>
+                @{
+                    if (ViewBag.area!=0)
+                    {
+                        <li class="layui-nav-item"><a onclick="goto('/Home/Book')" href="#">预订会议室</a></li>
+                    }
+                }
+
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item" onclick="showuserinfo('@ViewBag.username','@ViewBag.area')">
+                    <a href="javascript:;">
+                        <img src="~/lib/lib/layui/images/tx.jpg" class="layui-nav-img">
+                        @ViewBag.username
+                    </a>
+                </li>
+                <li class="layui-nav-item"><a asp-controller="System" asp-action="Logout" >退了</a></li>
+            </ul>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域根据登录人选择显示 -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="">选择区域</a>
+                        <dl class="layui-nav-child">
+                            @{
+                                if (ViewBag.area == 1)
+                                {
+                                    <dd><a onclick="goto('/Room/ShowLF')">总部</a></dd>
+                                }
+                                else if (ViewBag.area == 2)
+                                {
+                                    <dd><a onclick="goto('/Room/ShowBJ')">北京</a></dd>
+                                }
+                                else if (ViewBag.area == 3)
+                                {
+                                    <dd><a onclick="goto('/Room/ShowJN')">济南</a></dd>
+                                }
+                                else
+                                {
+                                    <dd><a onclick="goto('/Admin/Area')">区域信息</a></dd>
+                                    <dd><a onclick="goto('/Admin/RoomInfo')">会议室信息</a></dd>
+                                    <dd><a onclick="goto('/Admin/UserInfo')">用户信息</a></dd>
+                                    <dd><a onclick="goto('/Admin/BookInfo')">预定信息</a></dd>
+                                }
+                            }
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="layui-card">
+                @RenderBody()
+            </div>
+        </div>
+        </div>
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © shaksper
+        </div>
+        @RenderSection("Scripts", required: false)
+</body>
+</html>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+    layui.use('layer', function () {
+        var layer = layui.layer;
+        
+    });
+    function goto(url) {
+        var storage = window.localStorage;
+        token=storage.getItem("token");
+        window.location = url + "?token=" + token;
+    }
+    function showuserinfo(uname, area) {
+        var storage = window.localStorage;
+        token = storage.getItem("token");
+        layer.open({
+                    type: 2,
+            title: '修改密码',
+            content: '@Url.Action("editPwd","Admin")?token=' + token,
+                    area: ['400px', '300px'],
+                        yes: function (index, layero) {
+                            var body =top.layer.getChildFrame('body', index);
+                            var oldpwd = body.find('#oldpwd').val()
+                            var newpwd = body.find("#newpwd").val();
+                            var renewpwd = body.find("#renewpwd").val();
+                            if (newpwd != renewpwd) {
+                                layer.msg("输入不一致");
+                                return false;
+                            }
+                            var parm = { name: uname, area: area, oldpwd: oldpwd, newpwd: newpwd };
+                            //loading层
+                            var index1 = layer.load(1, {
+                                shade: [0.1, '#fff'] //0.1透明度的白色背景
+                            });
+                            $.post("@Url.Action("editPwd","Admin")?token=" + token, parm, function (res) {
+                                var msg = JSON.stringify(res);
+                                var jmsg = JSON.parse(msg);
+                                layer.close(index1);
+                                layer.msg(jmsg.message);
+                                if (jmsg.status == 1) {
+                                    storage.removeItem("token");
+                                    layer.close(index);
+                                    window.location.href = "@Url.Action("Login","System")";
+                                }
+                            });
+
+                    },
+                    btn: ['确定', '取消'],
+
+                });
+    }
+    
+</script>

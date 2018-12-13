@@ -1,0 +1,44 @@
+﻿@using Models;
+@{
+    Layout = null;
+ SYS_AREA model = ViewBag.model;
+}
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layer-v3.1.1/theme/default/layer.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layui/tb.css" />
+<script src="~/lib/lib/timeselect/js/jquery-1.9.1.js"></script>
+<script src="~/lib/lib/layui/layui.js"></script>
+<script src="~/lib/jquery.cookie.js"></script>
+@section Title{
+
+}
+<body>
+    <form class="layui-form" action="">
+        <input type="hidden" name="id" id="areaid" value="@(model==null?0:model.ID)"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block" style="width: 200px;">
+                <input type="text" name="name" id="areaname" required lay-verify="required" autocomplete="off" class="layui-input" value="@(model==null?"":model.NAME)">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">简拼</label>
+            <div class="layui-input-block" style="width: 200px;">
+                <input type="text" name="abbreviation" id="areaabb" required lay-verify="required" autocomplete="off" class="layui-input" value="@(model==null?"":model.ABBREVIATION)">
+            </div>
+        </div>
+
+    </form>
+</body>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>

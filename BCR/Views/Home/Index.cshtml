@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "";
+}
+@section Title{
+    首页
+}
+@*<div style="text-align:center;margin-top:40px;">*@
+@*<img src="~/images/index.jpg" width="800" height="400" />*@
+
+@*</div>*@
+<div class="layui-row">
+    <div class="layui-col-md9">
+
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+    </div>
+    <div class="layui-col-md3">
+        <div class="layui-card">
+            <div class="layui-card-header">添加待办</div>
+            <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">事项名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" style="width:150px;" required lay-verify="required" placeholder="请输入事项名称" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">事项内容</label>
+                        <div class="layui-input-block">
+                            <textarea name="content" placeholder="请输入事项内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优先级</label>
+                        <div class="layui-input-block">
+                            <select name="proirity" lay-verify="required">
+                                @{
+                                    List<SelectListItem> items = ViewBag.Items;
+                                    foreach (var item in items)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn"  lay-filter="formDemo" id="sub">提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="PRIORITYCOLORTpl">
+    <div style="height:20px;width:50px;background-color:{{d.PRIORITYCOLOR }}"></div>
+</script>
+<script type="text/html" id="progressTpl">
+    <div class="layui-progress layui-progress-big" lay-showPercent="true">
+        <div class="layui-progress-bar layui-bg-green" style="width:{{d.PROGRESS }}%">
+            <span class="layui-progress-text">{{d.PROGRESS }}%</span>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">修改进度</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="complete">完成</a>
+</script>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    layui.use('table', function () {
+        var table = layui.table;
+        var token = window.localStorage.getItem('token');
+        table.render({
+            elem: '#test'
+            , url: '/ToDo/getToDo?token=' + token
+            , height: 500
+            , cols: [[
+                { field: 'ID', width: 50, title: 'ID' }
+                , { field: 'TITLE', width: 100, title: '事项名称' }
+                , { field: 'CONTENT', width: 200, title: '事项内容' }
+                , { field: 'PRIORITYCOLOR', width: 100, title: '紧急程度', templet: '#PRIORITYCOLORTpl', sort: true}
+                , { field: 'PROGRESS', width: 150, title: '进度', templet: '#progressTpl', sort: true }
+                , { field: 'USERNAME', width: 100, title: '创建人' }
+                , { field: 'CREATETIME', width: 100, title: '创建时间', sort: true  }
+                , { width: 200, title: '操作', toolbar: '#barDemo' }
+            ]], response: {
+                statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+            }, parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.rows.item //解析数据列表
+                };
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'complete') {
+                layer.confirm('确定完成任务？', function (index) {
+                    //loading层
+                    var index = layer.load(1, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                    });
+                    var parm = { id: data.ID};
+                    $.post("@Url.Action("completeToDo", "ToDo")?token=" + token, parm, function (res) {
+                var msg = JSON.stringify(res);
+                var jmsg = JSON.parse(msg);
+                layer.close(index);
+                layer.msg(jmsg.message);
+                window.location.reload();
+            });
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    title: '修改进度',
+                    content: '请输入整数：<input type="text" required lay-verify="required" name="progress" id="progress" />',
+                    yes: function () {
+                        //loading层
+                        var index = layer.load(1, {
+                            shade: [0.1, '#fff'] //0.1透明度的白色背景
+                        });
+                        var progress = $('#progress').val();
+                        var parm = { id: data.ID, progress: progress};
+                    $.post("@Url.Action("editProgress", "ToDo")?token=" + token, parm, function (res) {
+                        var msg = JSON.stringify(res);
+                        var jmsg = JSON.parse(msg);
+                        layer.close(index);
+                        layer.msg(jmsg.message);
+                        if (jmsg.status == 1) {
+                            window.location.reload();
+                        }
+            });
+                    },
+                    resize: true,
+                    btn: ['确定', '取消'],
+                });
+            }
+        });
+    });
+    //添加待办
+    layui.use('form', function () {
+        var table = layui.table;
+        var form = layui.form;
+        
+    });
+    $("#sub").click(function () {
+        var token = window.localStorage.getItem('token');
+        //loading层
+        var index = layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+         });
+         var title = $("input[name='title']").val();
+        var content = $("textarea[name='content']").val();
+        var proirity = $("select[name='proirity']").val();
+        var parm = { title: title, content: content, proirity: proirity };
+        $.ajaxSettings.async = false;
+        $.post("@Url.Action("addToDo","ToDo")?token=" + token, parm, function (res) {
+                var msg = JSON.stringify(res);
+                var jmsg = JSON.parse(msg);
+                layer.close(index);
+            layer.msg(jmsg.message);
+            if (jmsg.status == 1) {
+                window.location.reload();
+            }
+            });
+    });
+   
+</script>

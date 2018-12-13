@@ -1,0 +1,131 @@
+﻿
+@{
+
+}
+@section Title{
+    会议室使用情况
+}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>会议室使用情况</legend>
+    <img src="~/lib/img/status_desc.png" />
+</fieldset>
+<div class="layui-card">
+    <div class="layui-card-header">
+        选择日期：<input type="text" required lay-verify="required" name="day" id="month" placeholder="请选择日期" />
+             <button class="layui-btn layui-btn-sm" id="btnsearch">查询</button>
+    </div>
+    <div class="layui-card-body">
+        <table class="tb" id="showstatus" >
+            <thead>
+                <tr>
+                    <th style="width:100px;">会议室名称</th>
+                    <th colspan="4">7</th>
+                    <th colspan="4">8</th>
+                    <th colspan="4">9</th>
+                    <th colspan="4">10</th>
+                    <th colspan="4">11</th>
+                    <th colspan="4">12</th>
+                    <th colspan="4">13</th>
+                    <th colspan="4">14</th>
+                    <th colspan="4">15</th>
+                    <th colspan="4">16</th>
+                    <th colspan="4">17</th>
+                    <th colspan="4">18</th>
+                    <th colspan="4">19</th>
+                    <th colspan="4">20</th>
+                    <th colspan="4">21</th>
+                    <th colspan="4">22</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    List<ShowModel> model = ViewBag.model;
+                    var rg = model.GroupBy(m => m.roomname);
+                    foreach (var item in rg)
+                    {
+                        <tr>
+                            <td>@item.First().roomname</td>
+                            @{
+                                foreach (var ite in item)
+                                {
+                                    <td class="tds" style="background-color:@ite.color_115" height="20px;"  onmouseover="showinfo(1,'@ite.color_115_user')" onmouseout="showinfo(0,'')"></td>
+                                    <td class="tds" style="background-color:@ite.color_1530" height="20px;" onmouseover="showinfo(1,'@ite.color_1530_user')" onmouseout="showinfo(0,'')"></td>
+                                    <td class="tds" style="background-color:@ite.color_3045" height="20px;" onmouseover="showinfo(1,'@ite.color_3045_user')" onmouseout="showinfo(0,'')"></td>
+                                    <td class="tds" style="background-color:@ite.color_4560" height="20px;" onmouseover="showinfo(1,'@ite.color_4560_user')" onmouseout="showinfo(0,'')"></td>
+                                }
+                            }
+                        </tr>
+
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script src="~/lib/lib/layer-v3.1.1/layer.js"></script>
+<script>
+    //获取当前时间，格式YYYY-MM-DD
+    function getNowFormatDate() {
+        if ('@ViewBag.time' != '') {
+            return new Date('@ViewBag.time').Format("yyyy-MM-dd");
+        }
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+    //常规用法--日期选择
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#month', //指定元素
+            value: getNowFormatDate()
+        });
+    });
+    $("#btnsearch").on('click', function () {
+        var time = $("#month").val();
+        var action = "@ViewBag.actionname";
+        var token = window.localStorage.getItem('token');
+        window.location.href = "/Room/" + action + "?time=" + time + "&token=" + token;
+
+    });
+    var showinfoindex = 0;
+    function showinfo(tp, uname) {
+        
+        if (tp == 1) {//显示
+            showinfoindex =layer.msg( uname, { icon: 7 });
+        } else {
+            layer.close(showinfoindex);
+        }
+    }
+    //日期格式化
+    Date.prototype.Format = function (fmt) { //author: meizz 
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S": this.getMilliseconds() //毫秒 
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+    
+</script>

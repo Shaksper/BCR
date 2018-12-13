@@ -1,0 +1,14 @@
+{
+  "ProjectFilePath": "c:\\myworkfile\\demos\\BCR\\Bg\\BCR\\Models\\Models.csproj",
+  "TargetFramework": "netcoreapp2.0",
+  "TagHelpers": [],
+  "Configuration": {
+    "ConfigurationName": "UnsupportedRazor",
+    "LanguageVersion": "1.0",
+    "Extensions": [
+      {
+        "ExtensionName": "UnsupportedRazorExtension"
+      }
+    ]
+  }
+}
