@@ -3,7 +3,7 @@
 
 编写语言：c#
 
-平台asp.net core 2.0
+平台asp.net core 2.0.9
 
 前端框架：layui
 
