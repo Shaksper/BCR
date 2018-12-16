@@ -17,6 +17,7 @@ namespace Library
         public string username { get; set; }
         public bool isadmin { get; set; }
         public int area { get; set; }
+        public int role { get; set; }
         /// <summary>
         /// 有效期
         /// </summary>

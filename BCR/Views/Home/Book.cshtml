@@ -1,159 +1,146 @@
 ﻿
 @{
-    
+    Layout = null;
 }
 @section Title{
     预订会议室
 }
-<link rel="stylesheet" href="~/lib/lib/timeselect/css/style.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib/lib/layer-v3.1.1/theme/default/layer.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/lib//lib/timeselect/css/style.css" />
+<script src="~/lib/lib/timeselect/js/jquery-1.9.1.js"></script>
+<script src="~/lib/lib/layui/layui.js"></script>
+<script src="~/lib/jquery.cookie.js"></script>
 <script src="~/lib/lib/timeselect/js/jquery-ui-1.10.3.custom.min.js"></script>
 
-    <form class="layui-form " action="" style="margin-top: 20px;">
-        <div class="layui-form-item">
-            <label class="layui-form-label">会议名称</label>
-            <div class="layui-input-block">
-                <input type="text" name="meetname" required lay-verify="required" placeholder="请输入会议名称" autocomplete="off"
-                       class="layui-input">
-            </div>
+<form class="layui-form " action="" style="margin-top: 20px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">会议名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="meetname" id="meetname" required lay-verify="required" placeholder="请输入会议名称" autocomplete="off"
+                   class="layui-input">
         </div>
-        <!--根据登录人绑定区域-->
-        <div class="layui-form-item">
-            <label class="layui-form-label">选择会议室</label>
-            <div class="layui-input-block">
-                <select name="room" lay-verify="required">
-                    @{
-                        List<SelectListItem> items = ViewBag.Items;
-                        foreach (var item in items)
-                        {
-                            <option value="@item.Value">@item.Text</option>
-                        }
+    </div>
+    <!--根据登录人绑定区域-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择会议室</label>
+        <div class="layui-input-block">
+            <select name="room" id="room" lay-verify="required">
+                @{
+                    List<SelectListItem> items = ViewBag.Items;
+                    foreach (var item in items)
+                    {
+                        <option value="@item.Value">@item.Text</option>
                     }
-                </select>
-            </div>
+                }
+            </select>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">会议时间</label>
-            <div class="layui-input-block">
-                <div class="time-bg">
-                    <span class="rangeSpan">时间范围：</span>
-                    <input type="text" required lay-verify="required" name="day" id="month" placeholder="请选择日期" />
-                    <input type="text" id="amount" name="hour" />
-                    <div id="slider-range"></div>
-                    <div id="time" >
-                        <ul></ul>
-                    </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会议时间</label>
+        <div class="layui-input-block">
+            <div class="time-bg">
+                <span class="rangeSpan">时间范围：</span>
+                <input type="text" required lay-verify="required" name="day" id="day" placeholder="请选择日期" />
+                <input type="text" id="amount" name="amount" readonly="readonly" />
+                <div id="slider-range"></div>
+                <div id="time">
+                    <ul></ul>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">会议类型</label>
-            <div class="layui-input-block">
-                <input type="radio" name="status" value="3" title="预约" checked>
-                <input type="radio" name="status" value="1" title="停用" >
-                <input type="radio" name="status" value="2" title="保留" >
-            </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会议类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="status" class="status" value="3" title="预约" checked>
+            <input type="radio" name="status" class="status" value="1" title="停用">
+            <input type="radio" name="status" class="status" value="2" title="保留">
         </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            </div>
-        </div>
-    </form>
+    </div>
+   
+</form>
 
-    <script>
-        //Demo
-        layui.use('form', function () {
-            var form = layui.form;
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
 
-            //监听提交
-            form.on('submit(formDemo)', function (data) {
-                //loading层
-                        var index = layer.load(1, {
-                            shade: [0.1, '#fff'] //0.1透明度的白色背景
-                });
-                var token = window.localStorage.getItem('token');
-                var parm = { token: token, meetname: data.field.meetname, room: data.field.room, day: data.field.day, hour: data.field.hour, status: data.field.status };
-                $.post("@Url.Action("PostBook")?token=" + token, parm, function (res) {
-                            var msg = JSON.stringify(res);
-                            var jmsg=JSON.parse(msg);
-                                layer.close(index);
-                                layer.msg(jmsg.message);
-                        });
-                        return false;
-            });
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+
+            return false;
         });
-        //常规用法--日期选择
-        layui.use('laydate', function () {
-            var laydate = layui.laydate;
+    });
+    //常规用法--日期选择
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
 
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#month', //指定元素
-                min: getNowFormatDate()
-            });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#day', //指定元素
+            min: getNowFormatDate()
         });
-        $(function () {
-            $("#slider-range").slider({
-                range: true,
-                min: 7,
-                max: 23,
-                step: 0.25,
-                values: [7, 23],
-                slide: function (event, ui) {
-                    var start = ui.values[0];
-                    var end = ui.values[1];
-                    var shows = (Math.floor(start / 1) + ":" + ((start % 1 * 60) == 0 ? '00' :
-                        start % 1 * 60));
-                    var showe = (Math.floor(end / 1) + ":" + ((end % 1 * 60) == 0 ? '00' : end % 1 *
-                        60));
-                    $("#amount").val(shows + "至 " + showe);
-                }
-            });
+    });
+    $(function () {
+        $("#slider-range").slider({
+            range: true,
+            min: 7,
+            max: 23,
+            step: 0.25,
+            values: [7, 23],
+            slide: function (event, ui) {
+                var start = ui.values[0];
+                var end = ui.values[1];
+                var shows = (Math.floor(start / 1) + ":" + ((start % 1 * 60) == 0 ? '00' :
+                    start % 1 * 60));
+                var showe = (Math.floor(end / 1) + ":" + ((end % 1 * 60) == 0 ? '00' : end % 1 *
+                    60));
+                $("#amount").val(shows + "至 " + showe);
+            }
+        });
 
-            var sliderValueS = $("#slider-range").slider("values", 0);
-            var sliderValueE = $("#slider-range").slider("values", 1);
-            var li = "";
-            for (var i = sliderValueS; i <= sliderValueE; i++) {
-                if (i == sliderValueS) {
-                    li += "<li style='margin-left:0;'>" + i + "</li>";
-                } else if (i == sliderValueE) {
-                    li += "<li style='margin-right:0;'>" + i + "</li>";
-                } else {
-                    li += "<li>" + i + "</li>";
-                }
+        var sliderValueS = $("#slider-range").slider("values", 0);
+        var sliderValueE = $("#slider-range").slider("values", 1);
+        var li = "";
+        for (var i = sliderValueS; i <= sliderValueE; i++) {
+            if (i == sliderValueS) {
+                li += "<li style='margin-left:0;'>" + i + "</li>";
+            } else if (i == sliderValueE) {
+                li += "<li style='margin-right:0;'>" + i + "</li>";
+            } else {
+                li += "<li>" + i + "</li>";
             }
-            $("#amount").val(sliderValueS + " 至 " + sliderValueE + "");
-            $(".time-bg #time ul").append(li);
-            var liWidth = $(".time-bg #time").width() / ((sliderValueE + 1) - (sliderValueS + 1));
-            $(".time-bg ul").css({
-                "width": parseInt($(".time-bg ul").css("width")) + liWidth,
-                "marginLeft": -liWidth / 2 + 3
-            });
-            $(".time-bg li").css({
-                "width": liWidth
-            });
-            $(".time-bg li:last").css({
-                "width": liWidth
-            });
-            //$(".time-bg #selected").click(function () {
-            //    alert("你选择的时间是：" + $("#amount").val());
-            //});
-        });
-        //获取当前时间，格式YYYY-MM-DD
-        function getNowFormatDate() {
-            var date = new Date();
-            var seperator1 = "-";
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var strDate = date.getDate();
-            if (month >= 1 && month <= 9) {
-                month = "0" + month;
-            }
-            if (strDate >= 0 && strDate <= 9) {
-                strDate = "0" + strDate;
-            }
-            var currentdate = year + seperator1 + month + seperator1 + strDate;
-            return currentdate;
         }
-    </script>
+        $("#amount").val(sliderValueS + " 至 " + sliderValueE + "");
+        $(".time-bg #time ul").append(li);
+        var liWidth = $(".time-bg #time").width() / ((sliderValueE + 1) - (sliderValueS + 1));
+        $(".time-bg ul").css({
+            "width": parseInt($(".time-bg ul").css("width")) + liWidth,
+            "marginLeft": -liWidth / 2 + 3
+        });
+        $(".time-bg li").css({
+            "width": liWidth
+        });
+        $(".time-bg li:last").css({
+            "width": liWidth
+        });
+        
+    });
+    //获取当前时间，格式YYYY-MM-DD
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+</script>

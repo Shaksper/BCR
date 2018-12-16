@@ -36,12 +36,16 @@ namespace BCR.Controllers
                 JwtClaim claim = jwt.DecodingJwt(token);
                 if (claim != null && DateTime.Now.ToBinary() <= claim.exp)
                 {
+                    if (claim.exp<=DateTime.Now.ToBinary())
+                    {
+                        //过期
+                        filterContext.Result = new RedirectResult("/System/Login");
+                    }
                     filterContext.HttpContext.Items.Add("user",claim);
                     base.OnActionExecuting(filterContext);
                 }
                 else
                 {
-                    //过期
                     filterContext.Result = new RedirectResult("/System/Login");
                 }
             }

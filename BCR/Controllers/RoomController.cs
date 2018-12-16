@@ -36,7 +36,7 @@ namespace BCR.Controllers
         }
 
         [PermitFilterAttribute]
-        public IActionResult ShowLF(DateTime time)
+        public IActionResult Show(DateTime time)
         {
             claim = (JwtClaim)_accessor.HttpContext.Items["user"];
             ViewBag.username = claim.username;

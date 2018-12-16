@@ -12,7 +12,8 @@
 <div class="layui-card">
     <div class="layui-card-header">
         选择日期：<input type="text" required lay-verify="required" name="day" id="month" placeholder="请选择日期" />
-             <button class="layui-btn layui-btn-sm" id="btnsearch">查询</button>
+        <button class="layui-btn layui-btn-sm" id="btnsearch">查询</button>
+        <button class="layui-btn layui-btn-normal" id="btnbook">预约会议室</button>
     </div>
     <div class="layui-card-body">
         <table class="tb" id="showstatus" >
@@ -97,9 +98,51 @@
     });
     $("#btnsearch").on('click', function () {
         var time = $("#month").val();
-        var action = "@ViewBag.actionname";
         var token = window.localStorage.getItem('token');
-        window.location.href = "/Room/" + action + "?time=" + time + "&token=" + token;
+        window.location.href = "/Room/Show?time=" + time + "&token=" + token;
+
+    });
+    //预定会议室
+    $("#btnbook").on('click', function () {
+       var storage = window.localStorage;
+        token = storage.getItem("token");
+        layer.open({
+                    type: 2,
+            title: '预约会议室',
+            content: '@Url.Action("Book","Home")?token=' + token,
+                    area: ['900px', '450px'],
+                        yes: function (index, layero) {
+                            var body =top.layer.getChildFrame('body', index);
+                            var meetname = body.find('#meetname').val()
+                            var room = body.find("#room").val();
+                            var day = body.find("#day").val();
+                            var hour = body.find("#amount").val();
+                            var status = body.find(".status:checked").val();
+                            if (meetname == '') {
+                                layer.msg('会议名称不可空');
+                                return false;
+                            }
+                            if (day=='') {
+                                layer.msg('请选择会议时间');
+                                return false;
+                            }
+                            var parm = { token: token, meetname:meetname, room: room, day: day, hour:hour, status: status };
+                            //loading层
+                            var index1 = layer.load(1, {
+                                shade: [0.1, '#fff'] //0.1透明度的白色背景
+                            });
+                            $.post("@Url.Action("PostBook","Home")?token=" + token, parm, function (res) {
+                            var msg = JSON.stringify(res);
+                            var jmsg=JSON.parse(msg);
+                                layer.close(index1);
+                                layer.msg(jmsg.message);
+                                layer.close(index);
+                                window.location.reload();
+                        });
+                    },
+                    btn: ['确定', '取消'],
+                    resize:false
+                });
 
     });
     var showinfoindex = 0;

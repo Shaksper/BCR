@@ -16,13 +16,16 @@
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
-            <div class="layui-logo" >BCR</div>
+            <div class="layui-logo">BCR</div>
             <ul class="layui-nav layui-layout-left">
                 <li class="layui-nav-item"><a onclick="goto('/Home/Index')" href="#">待办事项</a></li>
                 @{
-                    if (ViewBag.area!=0)
+                    if (ViewBag.area != 0)
                     {
-                        <li class="layui-nav-item"><a onclick="goto('/Home/Book')" href="#">预订会议室</a></li>
+                        <li class="layui-nav-item"><a onclick="goto('/Room/Show')" href="#">会议室</a></li>
+                        <li class="layui-nav-item"><a onclick="goto('/Home/Book')" href="#">项目</a></li>
+                        <li class="layui-nav-item"><a onclick="goto('/Home/Book')" href="#">周报</a></li>
+                        <li class="layui-nav-item"><a onclick="goto('/Home/Book')" href="#">月报</a></li>
                     }
                 }
 
@@ -34,53 +37,19 @@
                         @ViewBag.username
                     </a>
                 </li>
-                <li class="layui-nav-item"><a asp-controller="System" asp-action="Logout" >退了</a></li>
+                <li class="layui-nav-item"><a asp-controller="System" asp-action="Logout">退了</a></li>
             </ul>
         </div>
-        <div class="layui-side layui-bg-black">
-            <div class="layui-side-scroll">
-                <!-- 左侧导航区域根据登录人选择显示 -->
-                <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="">选择区域</a>
-                        <dl class="layui-nav-child">
-                            @{
-                                if (ViewBag.area == 1)
-                                {
-                                    <dd><a onclick="goto('/Room/ShowLF')">总部</a></dd>
-                                }
-                                else if (ViewBag.area == 2)
-                                {
-                                    <dd><a onclick="goto('/Room/ShowBJ')">北京</a></dd>
-                                }
-                                else if (ViewBag.area == 3)
-                                {
-                                    <dd><a onclick="goto('/Room/ShowJN')">济南</a></dd>
-                                }
-                                else
-                                {
-                                    <dd><a onclick="goto('/Admin/Area')">区域信息</a></dd>
-                                    <dd><a onclick="goto('/Admin/RoomInfo')">会议室信息</a></dd>
-                                    <dd><a onclick="goto('/Admin/UserInfo')">用户信息</a></dd>
-                                    <dd><a onclick="goto('/Admin/BookInfo')">预定信息</a></dd>
-                                }
-                            }
-                        </dl>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="layui-body">
             <!-- 内容主体区域 -->
             <div class="layui-card">
                 @RenderBody()
             </div>
-        </div>
-        </div>
-        <div class="layui-footer">
+        <div class="layui-footer" style="left:0px;">
             <!-- 底部固定区域 -->
             © shaksper
         </div>
+    </div>
+        
         @RenderSection("Scripts", required: false)
 </body>
 </html>
