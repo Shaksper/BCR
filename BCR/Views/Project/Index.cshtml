@@ -1,0 +1,45 @@
+﻿
+@{
+
+}
+@section Title{
+    项目
+}
+
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">项目看板</li>
+        <li>我的项目</li>
+    </ul>
+    <div class="layui-tab-content" style="height: 100px;">
+        <div class="layui-tab-item layui-show" id="projtable">
+            @*项目总数、项目分类、项目状态（正常、延期）、任务状态（完成多少，未开始多少，延期多少）*@
+            <iframe class='layui-col-xs12' src="@Url.Action("ProjectTab")"></iframe>
+        </div>
+        <div class="layui-tab-item">
+            @*未开始、进行中、已完成*@
+            <iframe class='layui-col-xs12' src="http://www.taobao.com"></iframe>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['element', 'jquery'], function () {
+        var element = layui.element;
+        var $ = jQuery = layui.jquery;
+        var items = ["位运算"];
+        FrameWH();
+        for (var i = 0; i < items.length; i++) {
+            console.log(items[i]);
+        }
+
+        function FrameWH() {
+            var h = $(window).height() - 180;
+            $("iframe").css("height", h + "px");
+        }
+
+        $(window).resize(function () {
+            FrameWH();
+        });
+
+    });
+</script>

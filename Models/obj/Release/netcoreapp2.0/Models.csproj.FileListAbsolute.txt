@@ -9,3 +9,14 @@ C:\myworkfile\demos\BCR\github\Models\obj\Release\netcoreapp2.0\Models.AssemblyI
 C:\myworkfile\demos\BCR\github\Models\obj\Release\netcoreapp2.0\Models.csproj.CopyComplete
 C:\myworkfile\demos\BCR\github\Models\obj\Release\netcoreapp2.0\Models.dll
 C:\myworkfile\demos\BCR\github\Models\obj\Release\netcoreapp2.0\Models.pdb
+C:\myworkfile\demos\BCR\bcr_git\Models\bin\Release\netcoreapp2.0\Models.deps.json
+C:\myworkfile\demos\BCR\bcr_git\Models\bin\Release\netcoreapp2.0\Models.dll
+C:\myworkfile\demos\BCR\bcr_git\Models\bin\Release\netcoreapp2.0\Models.pdb
+C:\myworkfile\demos\BCR\bcr_git\Models\bin\Release\netcoreapp2.0\ServiceStack.Text.dll
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.csprojAssemblyReference.cache
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.csproj.CoreCompileInputs.cache
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.AssemblyInfoInputs.cache
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.AssemblyInfo.cs
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.csproj.CopyComplete
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.dll
+C:\myworkfile\demos\BCR\bcr_git\Models\obj\Release\netcoreapp2.0\Models.pdb
